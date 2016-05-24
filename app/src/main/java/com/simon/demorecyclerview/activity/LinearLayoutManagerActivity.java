@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -14,17 +15,24 @@ import android.widget.Toast;
 import com.simon.demorecyclerview.R;
 import com.simon.demorecyclerview.model.User;
 import com.simon.demorecyclerview.adapter.LinearLayoutManagerAdapter;
+import com.simon.demorecyclerview.utils.UserUtil;
+import com.simon.demorecyclerview.widgets.MyRecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 public class LinearLayoutManagerActivity extends AppCompatActivity {
 
     private ImageView mImgBigView;
-    private RecyclerView mRecyclerView;
+    private MyRecyclerView mRecyclerView;
     private LinearLayoutManagerAdapter mManagerAdapter;
     private List<User> mUserList;
-    private List<Integer> mHeaderList;
+    public static String TAG = LinearLayoutManagerActivity.class.getSimpleName();
 
     public static void launcher(Context context) {
         context.startActivity(new Intent(context, LinearLayoutManagerActivity.class));
@@ -36,7 +44,6 @@ public class LinearLayoutManagerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_linear_layout_manager);
 
         assignViews();
-        initData();
         refreshData();
     }
 
@@ -44,49 +51,73 @@ public class LinearLayoutManagerActivity extends AppCompatActivity {
      * 绑定
      */
     private void assignViews() {
-        mRecyclerView = (RecyclerView) findViewById(R.id.linear_recycler_view);
+        mRecyclerView = (MyRecyclerView) findViewById(R.id.linear_recycler_view);
         mImgBigView = (ImageView) findViewById(R.id.linear_iv_big_img);
-    }
-
-    /**
-     * 初始化数据
-     */
-    private void initData() {
-        mUserList = new ArrayList<>();
-        mHeaderList = new ArrayList<>();
-        mHeaderList.add(R.drawable.draw1);
-        mHeaderList.add(R.drawable.draw2);
-        mHeaderList.add(R.drawable.draw3);
-
-        User user;
-        for (int i = 0; i < 3; i++) {
-            user = new User();
-            user.setHeaderImage(mHeaderList.get(i));
-            user.setName("xiao" + i);
-            mUserList.add(user);
-        }
 
         //设置布局
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayout.HORIZONTAL);
         mRecyclerView.setLayoutManager(layoutManager);
 
-        mManagerAdapter = new LinearLayoutManagerAdapter(this, mUserList);
+        mManagerAdapter = new LinearLayoutManagerAdapter(this);
         //设置单击事件监听
         mManagerAdapter.setmOnItemClickListener(new LinearLayoutManagerAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(View viewItem, int position) {
+            public void onItemClick(LinearLayoutManagerAdapter.ViewHolder holder, int position) {
                 Toast.makeText(LinearLayoutManagerActivity.this, "viewItem " + position, Toast.LENGTH_SHORT).show();
+                mImgBigView.setImageResource(holder.getUser().getHeaderImage());
             }
         });
         //设置适配器
         mRecyclerView.setAdapter(mManagerAdapter);
+
+        mRecyclerView.setmItemScrollChangeListener(new MyRecyclerView.OnItemScrollChangeListener() {
+            @Override
+            public void onChange(View view, int position) {
+                Log.i(TAG, "onChange: position=" + position);
+                mImgBigView.setImageResource(mUserList.get(position).getHeaderImage());
+            }
+        });
     }
 
     /**
      * 数据刷新
      */
     private void refreshData() {
+        mUserList = UserUtil.getUserList();
+        Observable
+                .create(new Observable.OnSubscribe<User>() {
+                    @Override
+                    public void call(Subscriber<? super User> subscriber) {
+                        for (User user : mUserList) {
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            subscriber.onNext(user);
+                        }
+                        subscriber.onCompleted();
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<User>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.d(TAG, "onCompleted");
+                    }
 
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(User response) {
+                        Log.d(TAG, "onNext: ");
+                        mManagerAdapter.addItem(response);
+                    }
+                });
     }
 }

@@ -11,19 +11,40 @@ import android.widget.TextView;
 import com.simon.demorecyclerview.R;
 import com.simon.demorecyclerview.model.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Coder on 2016/4/20.
+ * Created by xw on 2016/4/20.
  */
 public class LinearLayoutManagerAdapter extends RecyclerView.Adapter<LinearLayoutManagerAdapter.ViewHolder> {
 
     private Context mContext;
     private List<User> mUserList;
 
-    public LinearLayoutManagerAdapter(Context context, List<User> userList) {
+    public LinearLayoutManagerAdapter(Context context) {
         this.mContext = context;
-        this.mUserList = userList;
+        this.mUserList = new ArrayList<>();
+    }
+
+    /**
+     * ---------------数据添加和删除-----------------------
+     **/
+    public void addItem(User user) {
+        int rangeIndex = mUserList.size();
+        mUserList.add(user);
+        notifyItemChanged(rangeIndex);
+    }
+
+    public void addItems(List<User> userList) {
+        int rangeIndex = mUserList.size();
+        mUserList.addAll(userList);
+        notifyItemRangeChanged(rangeIndex, userList.size());
+    }
+
+    public void clear() {
+        mUserList.clear();
+        notifyDataSetChanged();
     }
 
 
@@ -49,7 +70,7 @@ public class LinearLayoutManagerAdapter extends RecyclerView.Adapter<LinearLayou
     @Override
     public void onBindViewHolder(LinearLayoutManagerAdapter.ViewHolder viewHolder, int position) {
         //为viewHolder绑定数据
-        viewHolder.bind(mUserList.get(position), position);
+        viewHolder.bind(mUserList.get(position), viewHolder, position);
     }
 
     @Override
@@ -59,6 +80,7 @@ public class LinearLayoutManagerAdapter extends RecyclerView.Adapter<LinearLayou
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
+        private User user;
         private View itemView;
         private ImageView ivHeader;
         private TextView tvName;
@@ -70,7 +92,8 @@ public class LinearLayoutManagerAdapter extends RecyclerView.Adapter<LinearLayou
             tvName = (TextView) itemView.findViewById(R.id.item_tv_name);
         }
 
-        public void bind(User user, final int position) {
+        public void bind(User user, final ViewHolder holder, final int position) {
+            this.user = user;
             ivHeader.setImageResource(user.getHeaderImage());
             tvName.setText(user.getName());
 
@@ -78,10 +101,14 @@ public class LinearLayoutManagerAdapter extends RecyclerView.Adapter<LinearLayou
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mOnItemClickListener.onItemClick(v, position);
+                        mOnItemClickListener.onItemClick(holder, position);
                     }
                 });
             }
+        }
+
+        public User getUser() {
+            return user;
         }
     }
 
@@ -90,7 +117,7 @@ public class LinearLayoutManagerAdapter extends RecyclerView.Adapter<LinearLayou
      * 单击事件接口
      */
     public interface OnItemClickListener {
-        void onItemClick(View viewItem, int position);
+        void onItemClick(ViewHolder holder, int position);
     }
 
     /**

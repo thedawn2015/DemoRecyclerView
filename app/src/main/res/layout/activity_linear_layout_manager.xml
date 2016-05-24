@@ -13,14 +13,14 @@
     <ImageView
         android:id="@+id/linear_iv_big_img"
         android:layout_width="300dp"
-        android:layout_height="200dp"
+        android:layout_height="350dp"
         android:layout_gravity="center_horizontal"
         android:scaleType="center" />
 
-    <android.support.v7.widget.RecyclerView
+    <com.simon.demorecyclerview.widgets.MyRecyclerView
         android:id="@+id/linear_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="10dp"></android.support.v7.widget.RecyclerView>
+        android:layout_marginTop="10dp"></com.simon.demorecyclerview.widgets.MyRecyclerView>
 
 </LinearLayout>

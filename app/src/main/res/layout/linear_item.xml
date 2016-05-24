@@ -9,11 +9,15 @@
         android:id="@+id/item_iv_header"
         android:layout_width="200dp"
         android:layout_height="180dp"
-        tools:src="@drawable/draw1"/>
+        android:layout_gravity="center_horizontal"
+        tools:src="@drawable/draw1" />
+
     <TextView
         android:id="@+id/item_tv_name"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
         tools:text="哈哈哈哈哈哈哈哈哈哈哈" />
 
 </LinearLayout>
