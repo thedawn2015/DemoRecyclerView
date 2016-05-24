@@ -106,5 +106,5 @@ public class LinearLayoutManagerAdapter extends RecyclerView.Adapter<LinearLayou
     public void setmOnItemClickListener(OnItemClickListener mOnItemClickListener) {
         this.mOnItemClickListener = mOnItemClickListener;
     }
-    /**---------------------------------------单击事件------------------------------------------**/
+
 }
