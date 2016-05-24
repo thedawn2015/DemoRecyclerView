@@ -59,11 +59,13 @@ public class LinearLayoutManagerAdapter extends RecyclerView.Adapter<LinearLayou
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView ivHeader;
-        TextView tvName;
+        private View itemView;
+        private ImageView ivHeader;
+        private TextView tvName;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            this.itemView = itemView;
             ivHeader = (ImageView) itemView.findViewById(R.id.item_iv_header);
             tvName = (TextView) itemView.findViewById(R.id.item_tv_name);
         }
@@ -73,7 +75,7 @@ public class LinearLayoutManagerAdapter extends RecyclerView.Adapter<LinearLayou
             tvName.setText(user.getName());
 
             if (mOnItemClickListener != null) {
-                ivHeader.setOnClickListener(new View.OnClickListener() {
+                itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         mOnItemClickListener.onItemClick(v, position);
