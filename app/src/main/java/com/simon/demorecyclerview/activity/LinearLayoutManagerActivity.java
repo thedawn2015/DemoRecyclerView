@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,20 +12,27 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.simon.demorecyclerview.R;
-import com.simon.demorecyclerview.model.User;
 import com.simon.demorecyclerview.adapter.LinearLayoutManagerAdapter;
+import com.simon.demorecyclerview.model.User;
 import com.simon.demorecyclerview.utils.UserUtil;
 import com.simon.demorecyclerview.widgets.MyRecyclerView;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class LinearLayoutManagerActivity extends AppCompatActivity {
+
+
+    @BindView(R.id.linear_iv_big_img)
+    ImageView linearIvBigImg;
+    @BindView(R.id.linear_recycler_view)
+    MyRecyclerView linearRecyclerView;
 
     private ImageView mImgBigView;
     private MyRecyclerView mRecyclerView;
@@ -43,6 +49,7 @@ public class LinearLayoutManagerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_linear_layout_manager);
+        ButterKnife.bind(this);
 
         assignViews();
         refreshData();
@@ -54,6 +61,7 @@ public class LinearLayoutManagerActivity extends AppCompatActivity {
     private void assignViews() {
         mRecyclerView = (MyRecyclerView) findViewById(R.id.linear_recycler_view);
         mImgBigView = (ImageView) findViewById(R.id.linear_iv_big_img);
+
 
         //设置布局
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
