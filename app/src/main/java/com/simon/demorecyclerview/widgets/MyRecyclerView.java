@@ -12,7 +12,7 @@ import android.view.View;
  */
 public class MyRecyclerView extends RecyclerView {
 
-    private View mCurrentView;
+    //    private View mCurrentView;
     private OnItemScrollChangeListener mItemScrollChangeListener;
 
     public static String TAG = MyRecyclerView.class.getSimpleName();
@@ -35,11 +35,16 @@ public class MyRecyclerView extends RecyclerView {
 //        Log.i(TAG, "onScrolled: dx=" + dx + "\ndy=" + dy);
         View newView = getChildAt(0);
         if (mItemScrollChangeListener != null) {
+            if (newView != null) {
+                mItemScrollChangeListener.onChange(newView, getChildAdapterPosition(newView));
+            }
+        }
+        /*if (mItemScrollChangeListener != null) {
             if (newView != null && newView != mCurrentView) {
                 mCurrentView = newView;
                 mItemScrollChangeListener.onChange(mCurrentView, getChildPosition(mCurrentView));
             }
-        }
+        }*/
     }
 
     @Override
