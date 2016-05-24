@@ -34,6 +34,7 @@ public class LinearLayoutManagerActivity extends AppCompatActivity {
     private List<User> mUserList;
     public static String TAG = LinearLayoutManagerActivity.class.getSimpleName();
 
+
     public static void launcher(Context context) {
         context.startActivity(new Intent(context, LinearLayoutManagerActivity.class));
     }
